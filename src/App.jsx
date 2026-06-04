@@ -3,7 +3,7 @@ import Home from './pages/Home'
 import Spotlight from './pages/Spotlight'
 import Loader from './components/HomePage/Loader'
 import Layout from './components/common/Layout'
-
+//shrikant 
 import { useEffect, useState } from 'react'
 import {
   BrowserRouter,
