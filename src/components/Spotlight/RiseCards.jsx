@@ -1,257 +1,207 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
-import {
-  Trophy,
-  Users,
-  Coins,
-  Gem,
-  Palette,
-  Gift,
-  ArrowUpRight,
-} from "lucide-react";
+import { forwardRef, useCallback, useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+import card1 from "../../assets/risecards/card1.png";
+import card2 from "../../assets/risecards/card2.png";
+import card3 from "../../assets/risecards/card3.png";
+import card4 from "../../assets/risecards/card4.png";
+import card5 from "../../assets/risecards/card5.png";
+import card6 from "../../assets/risecards/card6.png";
 
 const cards = [
-  {
-    title: "Community Leaderboard",
-    desc: "Track top-performing communities.",
-    icon: Users,
-  },
-  {
-    title: "Individual Leaderboard",
-    desc: "Compete and climb rankings.",
-    icon: Trophy,
-  },
-  {
-    title: "Point Quest",
-    desc: "Complete quests and earn points.",
-    icon: Coins,
-  },
-  {
-    title: "NFT Multiplier",
-    desc: "Boost rewards through NFTs.",
-    icon: Gem,
-  },
-  {
-    title: "Round Themes",
-    desc: "Explore every round's challenges.",
-    icon: Palette,
-  },
-  {
-    title: "Exclusive Rewards",
-    desc: "Unlock premium rewards.",
-    icon: Gift,
-  },
+  card1,
+  card2,
+  card3,
+  card4,
+  card5,
+  card6,
 ];
 
-function RiseCards() {
+const RiseCards = forwardRef(function RiseCards(_, forwardedRef) {
+  const sectionRef = useRef(null);
   const sliderRef = useRef(null);
+  const cardsRef = useRef([]);
 
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
 
+  const setSectionRef = useCallback(
+    (node) => {
+      sectionRef.current = node;
+
+      if (typeof forwardedRef === "function") {
+        forwardedRef(node);
+      } else if (forwardedRef) {
+        forwardedRef.current = node;
+      }
+    },
+    [forwardedRef]
+  );
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Heading Animation
+      gsap.from(".rise-cards-heading", {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+        },
+      });
+
+      // Cards Animation
+      gsap.from(cardsRef.current, {
+        y: 100,
+        opacity: 0,
+        stagger: 0.12,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+        },
+      });
+    }, sectionRef);
+
+    // Center first card
+    const centerFirstCard = () => {
+      if (!sliderRef.current || !cardsRef.current[0])
+        return;
+
+      const slider = sliderRef.current;
+      const firstCard = cardsRef.current[0];
+
+      slider.scrollLeft =
+        firstCard.offsetLeft -
+        slider.offsetWidth / 2 +
+        firstCard.offsetWidth / 2;
+    };
+
+    setTimeout(centerFirstCard, 100);
+
+    window.addEventListener(
+      "resize",
+      centerFirstCard
+    );
+
+    return () => {
+      ctx.revert();
+
+      window.removeEventListener(
+        "resize",
+        centerFirstCard
+      );
+    };
+  }, []);
+
+  // Start dragging
   const startDragging = (e) => {
     isDragging.current = true;
 
-    sliderRef.current.classList.add(
-      "cursor-grabbing"
-    );
-
     startX.current =
-      e.pageX -
-      sliderRef.current.offsetLeft;
+      e.pageX - sliderRef.current.offsetLeft;
 
     scrollLeft.current =
       sliderRef.current.scrollLeft;
   };
 
+  // Stop dragging
   const stopDragging = () => {
     isDragging.current = false;
-
-    sliderRef.current.classList.remove(
-      "cursor-grabbing"
-    );
   };
 
+  // While dragging
   const onDragging = (e) => {
     if (!isDragging.current) return;
 
     e.preventDefault();
 
     const x =
-      e.pageX -
-      sliderRef.current.offsetLeft;
+      e.pageX - sliderRef.current.offsetLeft;
 
-    const walk =
-      (x - startX.current) * 2.2;
+    const walk = (x - startX.current) * 1.4;
 
     sliderRef.current.scrollLeft =
       scrollLeft.current - walk;
   };
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="relative bg-white py-24 overflow-hidden"
+    <section
+      ref={setSectionRef}
+      id="rise-cards"
+      className="relative -mt-20 min-h-screen scroll-mt-20 overflow-hidden bg-[#dce4ef] pt-52 pb-20 text-black sm:-mt-24 sm:pt-56 md:-mt-32 md:pt-64 md:pb-24"
     >
-      {/* Glow */}
-      <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[350px] h-[350px] rounded-full bg-purple-300/20 blur-[140px]" />
+      <div
+        className="absolute -top-40 left-1/2 h-[430px] w-[140vw] -translate-x-1/2 pointer-events-none opacity-95 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(220,228,239,0.98) 0%, rgba(220,228,239,0.82) 44%, rgba(220,228,239,0.2) 62%, rgba(220,228,239,0) 78%)",
+        }}
+      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-[#dce4ef]/60 via-[#dce4ef]/90 to-[#dce4ef]" />
 
-      <div className="max-w-[1700px] mx-auto relative z-10">
+      <div className="relative z-10 max-w-[1800px] mx-auto text-center px-4">
+        
         {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.6,
-          }}
-          className="text-center mb-16 px-6"
-        >
-          <h2 className="text-5xl md:text-6xl font-bold text-black mt-4">
-            <p>RISE TO THE TOP</p>
-
-            <p className="text-[#0052ff]">
-              WITH...
-            </p>
-          </h2>
-        </motion.div>
+        <h2 className="rise-cards-heading mb-14 text-4xl font-bold text-black sm:mb-20 sm:text-6xl md:text-7xl">
+          RISE TO THE TOP <br />
+          <span className="text-[#0052ff]">
+            WITH...
+          </span>
+        </h2>
 
         {/* Slider */}
-        <div className="relative overflow-hidden">
-          <div
-            ref={sliderRef}
-            onMouseDown={startDragging}
-            onMouseLeave={stopDragging}
-            onMouseUp={stopDragging}
-            onMouseMove={onDragging}
-            className="
-              flex
-              flex-nowrap
-              overflow-x-auto
-              scrollbar-hide
-              cursor-grab
-              gap-6
-              px-[calc(50vw-135px)]
-              pb-8
-              select-none
-              scroll-smooth
-            "
-          >
-            {cards.map((card, index) => {
-              const Icon = card.icon;
+        <div
+          ref={sliderRef}
+          onMouseDown={startDragging}
+          onMouseMove={onDragging}
+          onMouseUp={stopDragging}
+          onMouseLeave={stopDragging}
+          className="scrollbar-hide flex cursor-grab select-none gap-5 overflow-x-auto px-[34vw] pb-10 active:cursor-grabbing sm:gap-6 sm:px-[35vw] md:px-[28vw] lg:px-[24vw]"
+        >
+          {cards.map((card, index) => (
+            <div
+              key={index}
+              ref={(el) =>
+                (cardsRef.current[index] = el)
+              }
+              className="group h-[382px] w-[260px] flex-none cursor-pointer overflow-hidden rounded-[28px] transition-all duration-500 sm:h-[441px] sm:w-[300px] sm:rounded-[32px] md:w-[340px]"
+            >
+              <img
+                src={card}
+                alt={`card-${index + 1}`}
+                className={`
+                  w-full h-full rounded-[32px]
+                  shadow-[0_20px_50px_rgba(0,0,0,0.12)]
+                  pointer-events-none select-none
+                  transition-transform duration-500
+                  group-hover:scale-[1.03]
 
-              return (
-                <motion.div
-                  key={index}
-                  initial={{
-                    opacity: 0,
-                    scale: 0.9,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    scale: 1,
-                  }}
-                  whileHover={{
-                    y: -10,
-                    scale: 1.05,
-                    rotate: -1,
-                  }}
-                  transition={{
-                    duration: 0.35,
-                  }}
-                  className="
-                    flex-none
-                    w-[270px]
-                    h-[300px]
-                    rounded-[34px]
-                    border
-                    border-purple-100
-                    bg-gradient-to-br
-                    from-white
-                    to-purple-50
-                    shadow-lg
-                    hover:shadow-[0_25px_60px_rgba(168,85,247,0.18)]
-                    transition-all
-                    duration-500
-                    p-6
-                    flex
-                    flex-col
-                    justify-between
-                    cursor-pointer
-                    group
-                    relative
-                  "
-                >
-                  {/* Glow */}
-                  <div className="absolute opacity-0 group-hover:opacity-100 transition duration-500 -top-10 -right-10 w-28 h-28 bg-purple-300/20 rounded-full blur-3xl" />
-
-                  {/* Top */}
-                  <div>
-                    <motion.div
-                      whileHover={{
-                        rotate: 10,
-                        scale: 1.08,
-                      }}
-                      className="
-                        w-16 h-16
-                        rounded-[20px]
-                        bg-gradient-to-br
-                        from-purple-500
-                        via-fuchsia-500
-                        to-indigo-500
-                        flex items-center justify-center
-                        shadow-lg
-                      "
-                    >
-                      <Icon
-                        size={28}
-                        className="text-white"
-                      />
-                    </motion.div>
-
-                    <h3 className="text-[22px] font-bold text-black mt-6 leading-snug">
-                      {card.title}
-                    </h3>
-
-                    <p className="text-gray-600 text-sm leading-6 mt-3">
-                      {card.desc}
-                    </p>
-                  </div>
-
-                  {/* Bottom */}
-                  <div className="flex items-center justify-between mt-auto">
-                    
-
-                    <motion.div
-                      whileHover={{
-                        rotate: 45,
-                      }}
-                      className="
-                        w-11 h-11
-                        rounded-full
-                        bg-purple-100
-                        flex items-center justify-center
-                      "
-                    >
-                      <ArrowUpRight
-                        size={18}
-                        className="text-purple-700"
-                      />
-                    </motion.div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                  ${
+                    index === 0
+                      ? "object-cover object-[center_35%] scale-[1.08]"
+                      : index === 1
+                      ? "object-cover object-[center_38%] scale-[1.08]"
+                      : index === 2
+                      ? "object-cover object-[center_36%] scale-[1.08]"
+                      : "object-cover object-center"
+                  }
+                `}
+                draggable="false"
+              />
+            </div>
+          ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
-}
+});
 
 export default RiseCards;

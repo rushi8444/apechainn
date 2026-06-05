@@ -25,7 +25,9 @@ function SeasonCard() {
         border-black
         overflow-hidden
         shadow-[0_15px_40px_rgba(0,0,0,0.18)]
+        hidden
         w-[260px]
+        md:block
       "
     >
       {/* Top Bar */}

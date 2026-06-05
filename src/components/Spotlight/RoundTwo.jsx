@@ -4,7 +4,7 @@ function RoundTwo() {
   return (
     <section
       id="round-two"
-      className="relative bg-white py-24 overflow-hidden"
+      className="relative overflow-hidden bg-[#dce4ef] py-16 md:py-24"
     >
       {/* Background Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-blue-300/20 blur-[140px] rounded-full" />
@@ -19,7 +19,7 @@ function RoundTwo() {
             relative
             w-full
             max-w-[1300px]
-            h-[700px]
+            h-[560px]
             overflow-hidden
             rounded-[50px]
             shadow-[0_25px_80px_rgba(0,0,0,0.12)]
@@ -39,7 +39,7 @@ function RoundTwo() {
 
           {/* Exact Center Content */}
           <div className="absolute inset-0 grid place-items-center z-10">
-            <div className="text-center px-6 max-w-[850px]">
+            <div className="flex max-w-[850px] flex-col items-center px-6 text-center">
               
               <h1 className="text-[48px] md:text-[72px] font-black uppercase leading-[0.95] tracking-[-2px] text-white">
                 ROUND #2:
@@ -55,26 +55,29 @@ function RoundTwo() {
                 REWARDS AND INFLUENCING THE INTERN TO SWEEP APECHAIN NFTS.
               </p>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="
-                  mt-10
-                  px-10
-                  py-4
-                  rounded-full
-                  bg-[#0052ff]
-                  border
-                  border-[#7fb1ff]
-                  text-white
-                  uppercase
-                  tracking-[2px]
-                  font-semibold
-                  shadow-[0_0_35px_rgba(0,82,255,0.45)]
-                "
-              >
-                INTERMISSION
-              </motion.button>
+              <div className="mt-10 rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,#60a5fa,#a855f7,#ec4899,#60a5fa)] p-[8px] shadow-xl shadow-blue-500/40 transition-all duration-500 hover:shadow-pink-500/60">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="
+                    flex
+                    items-center
+                    justify-center
+                    px-12
+                    py-5
+                    min-w-[170px]
+                    h-[36px]
+                    rounded-full
+                    bg-[#0052ff]
+                    ring-1
+                    ring-white/20
+                  "
+                >
+                  <span className="text-white font-medium tracking-[0.22em] text-[10px] uppercase leading-none text-center whitespace-nowrap">
+                    INTERMISSION
+                  </span>
+                </motion.button>
+              </div>
             </div>
           </div>
         </motion.div>
